@@ -59,20 +59,26 @@ void MX_GPIO_Init(void)
   __HAL_RCC_GPIOD_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOC, LSM_CS_Pin|E22_CS_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOC, LSM_CS_Pin|E22_CS_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, PYRO2_CTRL_Pin|PYRO1_CTRL_Pin|ICM_CS_Pin|LED_B_EN_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOB, PYRO2_CTRL_Pin|PYRO1_CTRL_Pin|LED_B_EN_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOE, LIS_CS_Pin|ADX_CS_Pin|LED_G_EN_Pin|LED_R_EN_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOE, LIS_CS_Pin|ADX_CS_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(MS5_CS_GPIO_Port, MS5_CS_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(GPIOB, MS5_CS_Pin|ICM_CS_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOD, GPS_CS_Pin|GPS_RST_Pin|E22_RST_Pin|E22_DIO1_Pin
-                          |E22_TXEN_Pin|E22_RXEN_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPS_CS_GPIO_Port, GPS_CS_Pin, GPIO_PIN_SET);
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOD, GPS_RST_Pin|E22_RST_Pin|E22_DIO1_Pin|E22_TXEN_Pin
+                          |E22_RXEN_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOE, LED_G_EN_Pin|LED_R_EN_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin : LSM_INT2_Pin */
   GPIO_InitStruct.Pin = LSM_INT2_Pin;
@@ -84,7 +90,7 @@ void MX_GPIO_Init(void)
   GPIO_InitStruct.Pin = LSM_CS_Pin|E22_CS_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
   /*Configure GPIO pin : LSM_INT1_Pin */
@@ -93,20 +99,18 @@ void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(LSM_INT1_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : PYRO2_CTRL_Pin PYRO1_CTRL_Pin MS5_CS_Pin ICM_CS_Pin
-                           LED_B_EN_Pin */
-  GPIO_InitStruct.Pin = PYRO2_CTRL_Pin|PYRO1_CTRL_Pin|MS5_CS_Pin|ICM_CS_Pin
-                          |LED_B_EN_Pin;
+  /*Configure GPIO pins : PYRO2_CTRL_Pin PYRO1_CTRL_Pin LED_B_EN_Pin */
+  GPIO_InitStruct.Pin = PYRO2_CTRL_Pin|PYRO1_CTRL_Pin|LED_B_EN_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : LIS_CS_Pin ADX_CS_Pin LED_G_EN_Pin LED_R_EN_Pin */
-  GPIO_InitStruct.Pin = LIS_CS_Pin|ADX_CS_Pin|LED_G_EN_Pin|LED_R_EN_Pin;
+  /*Configure GPIO pins : LIS_CS_Pin ADX_CS_Pin */
+  GPIO_InitStruct.Pin = LIS_CS_Pin|ADX_CS_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
   HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
 
   /*Configure GPIO pins : ICM_INT1_Pin ICM_INT2_Pin */
@@ -121,10 +125,24 @@ void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : GPS_CS_Pin GPS_RST_Pin E22_RST_Pin E22_DIO1_Pin
-                           E22_TXEN_Pin E22_RXEN_Pin */
-  GPIO_InitStruct.Pin = GPS_CS_Pin|GPS_RST_Pin|E22_RST_Pin|E22_DIO1_Pin
-                          |E22_TXEN_Pin|E22_RXEN_Pin;
+  /*Configure GPIO pins : MS5_CS_Pin ICM_CS_Pin */
+  GPIO_InitStruct.Pin = MS5_CS_Pin|ICM_CS_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : GPS_CS_Pin */
+  GPIO_InitStruct.Pin = GPS_CS_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+  HAL_GPIO_Init(GPS_CS_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : GPS_RST_Pin E22_RST_Pin E22_DIO1_Pin E22_TXEN_Pin
+                           E22_RXEN_Pin */
+  GPIO_InitStruct.Pin = GPS_RST_Pin|E22_RST_Pin|E22_DIO1_Pin|E22_TXEN_Pin
+                          |E22_RXEN_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
@@ -153,6 +171,13 @@ void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
   GPIO_InitStruct.Alternate = GPIO_AF12_SDMMC1;
   HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : LED_G_EN_Pin LED_R_EN_Pin */
+  GPIO_InitStruct.Pin = LED_G_EN_Pin|LED_R_EN_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
 
 }
 

@@ -47,6 +47,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user sources here
     User/Src/user_main.c
     User/Src/host_UART.c
+    User/Src/sensors.c
 )
 
 # Add include paths
