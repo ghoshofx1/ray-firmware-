@@ -46,15 +46,18 @@ target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user sources here
     User/Src/user_main.c
-    User/Src/host_UART.c
-    User/Src/sensors.c
+    User/Src/L1/SPI_driver.c
+    User/Src/L1/USART_driver.c
+    User/Src/L2/IMU.c
 )
 
 # Add include paths
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user defined include paths
     User/Inc
-
+    User/Inc/L1
+    User/Inc/L2
+    
 )
 
 # Add project symbols (macros)
