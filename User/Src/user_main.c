@@ -9,12 +9,15 @@ void user_main(void)
 
     char buf[50]; 
 
+    
+    //LSM_check_status();
     LSM_init();
-    LSM_check_status();
+    HAL_Delay(1000);
     LSM_accel_raw_t accel;
 
     while (1)
     {   
+        LSM_check_status();
         LSM_accel_raw_read(&accel);
         HAL_Delay(1000);
     }
