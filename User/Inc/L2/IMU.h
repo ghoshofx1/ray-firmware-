@@ -10,9 +10,8 @@ typedef struct {
 } LSM_accel_raw_t;
 
 
-uint8_t LSM_check_status(void);
+void LSM_check_status(void);
 void LSM_init(void);
-void LSM_accel_raw_read(LSM_accel_raw_t *accel);
-
+void LSM_accel_raw_read(LSM_accel_raw_t *accel_raw);
 
 #endif /* SENSORS_H */

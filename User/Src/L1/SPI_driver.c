@@ -7,7 +7,7 @@
 void LSM_write(uint8_t reg, uint8_t data)
 {
     uint8_t tx[2];
-    // uint8_t rx[2];
+   
 
     tx[0] = 0x7F & reg; // WRITE OPERATION to reg
     tx[1] = data;       // data byte
@@ -18,18 +18,16 @@ void LSM_write(uint8_t reg, uint8_t data)
 }
 
 
-uint8_t LSM_read(uint8_t start_reg, uint8_t len)
+void LSM_read(uint8_t start_reg, uint8_t len, uint8_t *rx_buffer)
 {
-    // uint8_t count = bytes;
+   
     uint8_t tx[len + 1];
-    uint8_t rx[len + 1];
-
+  
     tx[0] = 0x80 | start_reg; // READ OPERATION starting at reg
-    memset(&tx[1], 0x00, len);
+    memset(&tx[1], 0x00, len); // fill rest with dummy bytes
 
     LSM_CS_LOW();
-    HAL_SPI_TransmitReceive(&hspi2, tx, rx, len + 1, HAL_MAX_DELAY);
+    HAL_SPI_TransmitReceive(&hspi2, tx, rx_buffer, len + 1, HAL_MAX_DELAY);
     LSM_CS_HIGH();
 
-    return rx[1];
 }

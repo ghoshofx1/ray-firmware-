@@ -9,6 +9,6 @@
 #define LSM_CS_HIGH() HAL_GPIO_WritePin(LSM_CS_GPIO_Port, LSM_CS_Pin, GPIO_PIN_SET)
 
 void LSM_write(uint8_t reg, uint8_t data);
-uint8_t LSM_read(uint8_t start_reg, uint8_t bytes);
+void LSM_read(uint8_t start_reg, uint8_t len, uint8_t *rx_buffer);
 
 #endif // SPI_DRIVER_H
