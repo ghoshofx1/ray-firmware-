@@ -8,7 +8,6 @@ void LSM_write(uint8_t reg, uint8_t data)
 {
     uint8_t tx[2];
    
-
     tx[0] = 0x7F & reg; // WRITE OPERATION to reg
     tx[1] = data;       // data byte
 
@@ -31,3 +30,4 @@ void LSM_read(uint8_t start_reg, uint8_t len, uint8_t *rx_buffer)
     LSM_CS_HIGH();
 
 }
+

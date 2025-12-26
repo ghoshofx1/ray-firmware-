@@ -18,6 +18,10 @@
 #define CTRL10 (uint8_t)0x19
 // #include <stdint.h>
 
+#define G 9.80665
+#define ACC_SENSITIVITY_2G 0.061   // mg/LSB
+#define GYRO_SENSITIVITY_125DPS 4.375 // mdps/LSB
+
 void LSM_check_status(void)
 {
     char buf[50];
@@ -75,4 +79,32 @@ void LSM_gyro_raw_read(LSM_gyro_raw_t *gyro_raw)
     gyro_raw->x = (int16_t)(rx[1] | (rx[2] << 8));
     gyro_raw->y = (int16_t)(rx[3] | (rx[4] << 8));
     gyro_raw->z = (int16_t)(rx[5] | (rx[6] << 8));
+
 }
+
+/* CHANGE THIS AS NEEDED - Accelerometer and gyroscope conversion functions for FSR = 2G and 125DPS */
+
+float accel_mps2(int16_t raw) {
+    return raw * ACC_SENSITIVITY_2G * G / 1000.0;
+}
+
+float gyro_dps(int16_t raw) {
+    return raw * GYRO_SENSITIVITY_125DPS / 1000.0;
+}
+
+float gyro_rads(int16_t raw) {
+    return gyro_dps(raw) * 3.14159265 / 180.0;
+}
+
+
+void LSM_convert(const LSM_accel_raw_t *accel_raw, const LSM_gyro_raw_t *gyro_raw, IMU_phys_t *phys)
+{
+    phys->ax = accel_mps2(accel_raw->x);
+    phys->ay = accel_mps2(accel_raw->y);
+    phys->az = accel_mps2(accel_raw->z);
+
+    phys->gx = gyro_rads(gyro_raw->x);
+    phys->gy = gyro_rads(gyro_raw->y);
+    phys->gz = gyro_rads(gyro_raw->z);
+}
+
