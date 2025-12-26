@@ -7,8 +7,15 @@
 #include <stm32h7xx_hal.h>
 
 #define CTRL1 (uint8_t)0x10
+#define CTRL2 (uint8_t)0x11
 #define CTRL3 (uint8_t)0x12
-
+#define CTRL4 (uint8_t)0x13
+#define CTRL5 (uint8_t)0x14
+#define CTRL6 (uint8_t)0x15
+#define CTRL7 (uint8_t)0x16
+#define CTRL8 (uint8_t)0x17
+#define CTRL9 (uint8_t)0x18
+#define CTRL10 (uint8_t)0x19
 // #include <stdint.h>
 
 void LSM_check_status(void)
@@ -24,9 +31,12 @@ void LSM_check_status(void)
     uint8_t check_CTRL1[2];
     LSM_read(CTRL1, 1, check_CTRL1);
 
-    // sprintf(buf, "CTRL3 = 0x%02X\r\n", check_CTRL3);
-    // send_host_message(buf);
     sprintf(buf, "CTRL1 = 0x%02X\r\n", check_CTRL1[1]);
+    send_host_message(buf);
+
+    uint8_t check_CTRL2[2];
+    LSM_read(CTRL2, 1, check_CTRL2);
+    sprintf(buf, "CTRL2 = 0x%02X\r\n", check_CTRL2[1]);
     send_host_message(buf);
 }
 
@@ -41,6 +51,10 @@ void LSM_init(void)
     /*initialize accelerometer*/
     uint8_t CTRL1_data = 0x09;
     LSM_write(CTRL1, CTRL1_data);
+
+    /*initialize gyroscope*/
+    uint8_t CTRL2_data = 0x09;
+    LSM_write(CTRL2, CTRL2_data);
 }
 
 void LSM_accel_raw_read(LSM_accel_raw_t *accel_raw)
@@ -51,5 +65,14 @@ void LSM_accel_raw_read(LSM_accel_raw_t *accel_raw)
     accel_raw->x = (int16_t)(rx[1] | (rx[2] << 8));
     accel_raw->y = (int16_t)(rx[3] | (rx[4] << 8));
     accel_raw->z = (int16_t)(rx[5] | (rx[6] << 8));
+}
 
+void LSM_gyro_raw_read(LSM_gyro_raw_t *gyro_raw)
+{
+    uint8_t rx[7] = {0};
+    LSM_read(0x22, 6, rx);
+
+    gyro_raw->x = (int16_t)(rx[1] | (rx[2] << 8));
+    gyro_raw->y = (int16_t)(rx[3] | (rx[4] << 8));
+    gyro_raw->z = (int16_t)(rx[5] | (rx[6] << 8));
 }

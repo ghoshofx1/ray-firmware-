@@ -16,13 +16,19 @@ void user_main(void)
     LSM_init();
     HAL_Delay(1000);
     LSM_accel_raw_t accel;
+    LSM_gyro_raw_t gyro;
 
+    
     while (1)
     {   
         //LSM_check_status();
         LSM_accel_raw_read(&accel);
         sprintf(buf, "AX: %d AY: %d AZ: %d\r\n", accel.x, accel.y, accel.z);
         send_host_message(buf);
+        LSM_gyro_raw_read(&gyro);
+        sprintf(buf, "GX: %d GY: %d GZ: %d\r\n", gyro.x, gyro.y, gyro.z);
+        send_host_message(buf);    
+
         HAL_Delay(10);
     }
 }

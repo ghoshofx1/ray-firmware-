@@ -9,9 +9,16 @@ typedef struct {
     int16_t z;
 } LSM_accel_raw_t;
 
+typedef struct {
+    int16_t x;
+    int16_t y;
+    int16_t z;
+} LSM_gyro_raw_t;
 
 void LSM_check_status(void);
 void LSM_init(void);
+
 void LSM_accel_raw_read(LSM_accel_raw_t *accel_raw);
+void LSM_gyro_raw_read(LSM_gyro_raw_t *gyro_raw);
 
 #endif /* SENSORS_H */
