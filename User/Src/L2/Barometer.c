@@ -1,6 +1,7 @@
 #include "L2/Barometer.h"
 #include "L1/SPI_driver.h"
 #include <stm32h7xx_hal.h>
+#include "spi.h"
 
 #define CMD_RESET 0x1E    // ADC reset command
 #define CMD_ADC_READ 0x00 // ADC read command
@@ -14,25 +15,30 @@
 #define CMD_ADC_4096 0x08 // ADC OSR=4096
 #define CMD_PROM_RD 0xA0  // Prom read command
 
-void MS5_init(void)
+#define MS5_CS_LOW() HAL_GPIO_WritePin(MS5_CS_GPIO_Port, MS5_CS_Pin, GPIO_PIN_RESET)
+#define MS5_CS_HIGH() HAL_GPIO_WritePin(MS5_CS_GPIO_Port, MS5_CS_Pin, GPIO_PIN_SET)
+
+void MS5_reset(void)
 {
-    // Send reset command to MS5 barometer
-    MS5_write(CMD_RESET);
-    HAL_Delay(10); // Wait for reset to complete
+    uint8_t cmd = CMD_RESET;
+    MS5_CS_LOW();
+    HAL_SPI_Transmit(&hspi6, &cmd, 1, HAL_MAX_DELAY);
+    HAL_Delay(5); 
+    MS5_CS_HIGH();
 }
 
 void MS5_read_PROM(MS5_prom_t *prom)
 {
-    uint8_t rx_buffer[3]; // 1 byte for dummy data, 2 bytes for PROM data
+    uint8_t rx_buffer[3];
 
-    for (uint8_t i = 1; i <= 6; i++)
+    for (uint8_t i = 1; i <= 6; i++) 
     {
 
-        uint8_t cmd = CMD_PROM_RD + (i << 1); // Calculate PROM read address for each coefficient
+        uint8_t cmd = CMD_PROM_RD + (i << 1); // 0XA2, 0XA4, ...
 
-        MS5_read(cmd, 2, rx_buffer); // Read 2 bytes from each PROM address
+        MS5_read(cmd, 2, rx_buffer); 
 
-        uint16_t coeff = ((uint16_t)rx_buffer[1] << 8) | rx_buffer[2];
+        uint16_t coeff = ((uint16_t)rx_buffer[1] << 8) | rx_buffer[2]; 
 
         switch (i)
         {
@@ -59,27 +65,24 @@ void MS5_read_PROM(MS5_prom_t *prom)
 }
 
 
-void MS5_start_conversion(uint8_t cmd)
-{
-    MS5_write(cmd);
-    HAL_Delay(10); // Wait for conversion to complete (NOTE THAT THIS VARIES BASED ON THE CHOSEN OST=R)
-}
-
-
 void MS5_read_raw_values(MS5_raw_values_t *values)
 {
-    //uint8_t rx_buffer[4]; // 1 byte for dummy data, 3 bytes for ADC data
+    uint8_t rx_buffer[4]; 
 
-    uint8_t cmd = CMD_ADC_CONV | CMD_ADC_D1 | CMD_ADC_4096; // NOTE THAT OSR CAN BE CHANGED HERE
-    MS5_start_conversion(cmd);
-
-    uint8_t rx_buffer[4]; // 1 byte for dummy data, 3 bytes for ADC data
-
-    // Read raw pressure (D1)
-    MS5_read(CMD_ADC_READ, 3, rx_buffer); // Read 3 bytes from ADC
+    // convert and read D1
+    uint8_t cmd = CMD_ADC_CONV | CMD_ADC_D1 | CMD_ADC_4096; 
+    MS5_write(cmd); 
+    HAL_Delay(10); // varies based on OSR
+    MS5_read(CMD_ADC_READ, 3, rx_buffer); 
     values->raw_pressure = ((int32_t)rx_buffer[1] << 16) | ((int32_t)rx_buffer[2] << 8) | rx_buffer[3];
 
-    // // Read raw temperature (D2)
-    // MS5_read(CMD_ADC_READ, 3, rx_buffer); // Read 3 bytes from ADC
-    // values->raw_temperature = ((int32_t)rx_buffer[1] << 16) | ((int32_t)rx_buffer[2] << 8) | rx_buffer[3];
+
+
+    // convert and read D2
+    cmd = CMD_ADC_CONV | CMD_ADC_D2 | CMD_ADC_4096; 
+    MS5_write(cmd); 
+    HAL_Delay(10); // varies based on OSR
+    MS5_read(CMD_ADC_READ, 3, rx_buffer); 
+    values->raw_temperature = ((int32_t)rx_buffer[1] << 16) | ((int32_t)rx_buffer[2] << 8) | rx_buffer[3];
+
 }

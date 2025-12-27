@@ -19,7 +19,7 @@ typedef struct {
     int32_t raw_temperature; // Raw temperature value
 } MS5_raw_values_t;
 
-void MS5_init(void);
+void MS5_reset(void);
 void MS5_read_PROM(MS5_prom_t *prom);
 void MS5_start_conversion(uint8_t cmd);
 void MS5_read_raw_values(MS5_raw_values_t *values);
