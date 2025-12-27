@@ -22,6 +22,23 @@
 #define ACC_SENSITIVITY_2G 0.061   // mg/LSB
 #define GYRO_SENSITIVITY_125DPS 4.375 // mdps/LSB
 
+
+
+/* Static helper functions */
+
+static float accel_mps2(int16_t raw) {
+    return raw * ACC_SENSITIVITY_2G * G / 1000.0;
+}
+
+static float gyro_dps(int16_t raw) {
+    return raw * GYRO_SENSITIVITY_125DPS / 1000.0;
+}
+
+static float gyro_rads(int16_t raw) {
+    return gyro_dps(raw) * 3.14159265 / 180.0;
+}
+
+
 void LSM_check_status(void)
 {
     char buf[50];
@@ -52,11 +69,11 @@ void LSM_init(void)
     LSM_write(CTRL3, CTRL3_data);
     HAL_Delay(1000); // wait for reset to complete
 
-    /*initialize accelerometer*/
+    /*initialize accelerometer for FSR 2g*/
     uint8_t CTRL1_data = 0x09;
     LSM_write(CTRL1, CTRL1_data);
 
-    /*initialize gyroscope*/
+    /*initialize gyroscope for FSR 125 dps*/
     uint8_t CTRL2_data = 0x09;
     LSM_write(CTRL2, CTRL2_data);
 }
@@ -80,20 +97,6 @@ void LSM_gyro_raw_read(LSM_gyro_raw_t *gyro_raw)
     gyro_raw->y = (int16_t)(rx[3] | (rx[4] << 8));
     gyro_raw->z = (int16_t)(rx[5] | (rx[6] << 8));
 
-}
-
-/* CHANGE THIS AS NEEDED - Accelerometer and gyroscope conversion functions for FSR = 2G and 125DPS */
-
-float accel_mps2(int16_t raw) {
-    return raw * ACC_SENSITIVITY_2G * G / 1000.0;
-}
-
-float gyro_dps(int16_t raw) {
-    return raw * GYRO_SENSITIVITY_125DPS / 1000.0;
-}
-
-float gyro_rads(int16_t raw) {
-    return gyro_dps(raw) * 3.14159265 / 180.0;
 }
 
 

@@ -38,6 +38,10 @@ typedef struct
     int32_t raw_temperature; // Raw temperature value
 } MS5_raw_values_t;
 
+
+static MS5_prom_t ms5_coeffs;
+
+
 /* Static Helper functions */
 
 static void MS5_read_PROM(MS5_prom_t *prom)
@@ -98,26 +102,29 @@ static void MS5_read_raw_values(MS5_raw_values_t *values)
 
 /* Public-facing functions*/
 
-void MS5_reset(void)
+void MS5_initialize(void)
 {
+    // Send reset command
     uint8_t cmd = CMD_RESET;
     MS5_CS_LOW();
     HAL_SPI_Transmit(&hspi6, &cmd, 1, HAL_MAX_DELAY);
     HAL_Delay(5);
     MS5_CS_HIGH();
+
+    // Read PROM coefficients once
+    MS5_read_PROM(&ms5_coeffs);
+
 }
 
 void MS5_read_compensated_values(MS5_compensated_values_t *comp_values)
 {
     char buf[75];
-    MS5_prom_t coeffs;
     MS5_raw_values_t raw_values;
-
-    MS5_read_PROM(&coeffs);
     MS5_read_raw_values(&raw_values);
 
-    sprintf(buf, "C1: %u C2: %u C3: %u C4: %u C5: %u C6: %u\r\n", coeffs.C1, coeffs.C2, coeffs.C3, coeffs.C4, coeffs.C5, coeffs.C6);
+    sprintf(buf, "C1: %u C2: %u C3: %u C4: %u C5: %u C6: %u\r\n", ms5_coeffs.C1, ms5_coeffs.C2, ms5_coeffs.C3, ms5_coeffs.C4, ms5_coeffs.C5, ms5_coeffs.C6);
     send_host_message(buf);
     sprintf(buf, "Raw Pressure: %ld Raw Temperature: %ld\r\n", raw_values.raw_pressure, raw_values.raw_temperature);
     send_host_message(buf);
+
 }

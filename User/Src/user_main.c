@@ -19,7 +19,7 @@ void user_main(void)
     // LSM_accel_raw_t accel;
     // LSM_gyro_raw_t gyro;
     // IMU_phys_t imu_data;
-    MS5_reset();
+    MS5_initialize();
     // MS5_prom_t prom;
     // MS5_raw_values_t values;
     MS5_compensated_values_t comp_values;
