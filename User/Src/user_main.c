@@ -48,6 +48,8 @@ void user_main(void)
         // send_host_message(buf);
        
         MS5_read_compensated_values(&comp_values);
+        // sprintf(buf, "Pressure: %.2f mbar Temperature: %.2f C\r\n", comp_values.pressure, comp_values.temperature);
+        // send_host_message(buf);
 
         HAL_Delay(1000);
     }

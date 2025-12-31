@@ -5,8 +5,8 @@
 
 
 typedef struct {
-    float pressure;    // Compensated pressure in mbar
-    float temperature; // Compensated temperature in degrees Celsius
+    int32_t pressure;    // Compensated pressure in mbar
+    int32_t temperature; // Compensated temperature in degrees Celsius
 } MS5_compensated_values_t;
 
 void MS5_initialize(void);

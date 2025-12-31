@@ -34,13 +34,11 @@ typedef struct
 
 typedef struct
 {
-    int32_t raw_pressure;    // Raw pressure value
-    int32_t raw_temperature; // Raw temperature value
+    uint32_t raw_pressure;    // Raw pressure value
+    uint32_t raw_temperature; // Raw temperature value
 } MS5_raw_values_t;
 
-
 static MS5_prom_t ms5_coeffs;
-
 
 /* Static Helper functions */
 
@@ -113,7 +111,6 @@ void MS5_initialize(void)
 
     // Read PROM coefficients once
     MS5_read_PROM(&ms5_coeffs);
-
 }
 
 void MS5_read_compensated_values(MS5_compensated_values_t *comp_values)
@@ -122,9 +119,41 @@ void MS5_read_compensated_values(MS5_compensated_values_t *comp_values)
     MS5_raw_values_t raw_values;
     MS5_read_raw_values(&raw_values);
 
+    uint32_t D1 = raw_values.raw_pressure;
+    uint32_t D2 = raw_values.raw_temperature;
+
+    double_t TEMP, PRESSURE, dT, OFF, SENS;
+
+    double_t C[] = {
+        0,
+        (double_t)ms5_coeffs.C1,
+        (double_t)ms5_coeffs.C2,
+        (double_t)ms5_coeffs.C3,
+        (double_t)ms5_coeffs.C4,
+        (double_t)ms5_coeffs.C5,
+        (double_t)ms5_coeffs.C6
+    };
+    
+    /* Calculate 1st order pressure and temperature */
+
+    dT = (double_t)D2 - (C[5] * 256.0);          // 2^8
+
+    OFF = (C[2] * 131072.0) + (dT * C[4]) / 64.0;   // 2^17, 2^6
+
+    SENS = (C[1] * 65536.0) + (dT * C[3]) / 128.0;  // 2^16, 2^7
+
+    TEMP = (2000.0 + (dT * C[6]) / 8388608.0) / 100.0; // 2^23
+
+    PRESSURE = ((((double_t)D1 * SENS) / 2097152.0 - OFF)  // 2^21
+                / 32768.0)                                 // 2^15
+     / 100.0;
+
+    // sprintf(buf, "Pressure: %ld mbar Temperature: %ld C\r\n", PRESSURE, TEMP);
+    // send_host_message(buf);
+
+
     sprintf(buf, "C1: %u C2: %u C3: %u C4: %u C5: %u C6: %u\r\n", ms5_coeffs.C1, ms5_coeffs.C2, ms5_coeffs.C3, ms5_coeffs.C4, ms5_coeffs.C5, ms5_coeffs.C6);
     send_host_message(buf);
-    sprintf(buf, "Raw Pressure: %ld Raw Temperature: %ld\r\n", raw_values.raw_pressure, raw_values.raw_temperature);
+    sprintf(buf, "Raw Pressure: %ld Raw Temperature: %ld\r\n", D1, D2);
     send_host_message(buf);
-
 }
