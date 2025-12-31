@@ -152,12 +152,12 @@ void MS5_read_compensated_values(MS5_compensated_values_t *comp_values)
      / 100.0;
 
     
-    comp_values->pressure = (int32_t)PRESSURE;    // in mbar
-    comp_values->temperature = (int32_t)TEMP;      // in deg C
+    comp_values->pressure = PRESSURE;    // in mbar
+    comp_values->temperature = TEMP;      // in deg C
 
-    x = (float)TEMP;
-    y = (float)PRESSURE;
+    // x = (float)TEMP;
+    // y = (float)PRESSURE;
 
-    sprintf(buf, "FLOAT TEMP: %.2f C, FLOAT PRESSURE: %.2f mbar\r\n", x, y);
-    send_host_message(buf);
+    // sprintf(buf, "FLOAT TEMP: %.2f C, FLOAT PRESSURE: %.2f mbar\r\n", x, y);
+    // send_host_message(buf);
 }
