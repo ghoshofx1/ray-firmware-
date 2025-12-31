@@ -123,7 +123,10 @@ void MS5_read_compensated_values(MS5_compensated_values_t *comp_values)
     uint32_t D2 = raw_values.raw_temperature;
 
     double_t TEMP, PRESSURE, dT, OFF, SENS;
+    float x;
+    float y;
 
+    /* Not sure if this is the most efficient way. Maybe it is better to store the coeffs as double_t in the first place??*/
     double_t C[] = {
         0,
         (double_t)ms5_coeffs.C1,
@@ -148,12 +151,13 @@ void MS5_read_compensated_values(MS5_compensated_values_t *comp_values)
                 / 32768.0)                                 // 2^15
      / 100.0;
 
-    // sprintf(buf, "Pressure: %ld mbar Temperature: %ld C\r\n", PRESSURE, TEMP);
-    // send_host_message(buf);
+    
+    comp_values->pressure = (int32_t)PRESSURE;    // in mbar
+    comp_values->temperature = (int32_t)TEMP;      // in deg C
 
+    x = (float)TEMP;
+    y = (float)PRESSURE;
 
-    sprintf(buf, "C1: %u C2: %u C3: %u C4: %u C5: %u C6: %u\r\n", ms5_coeffs.C1, ms5_coeffs.C2, ms5_coeffs.C3, ms5_coeffs.C4, ms5_coeffs.C5, ms5_coeffs.C6);
-    send_host_message(buf);
-    sprintf(buf, "Raw Pressure: %ld Raw Temperature: %ld\r\n", D1, D2);
+    sprintf(buf, "FLOAT TEMP: %.2f C, FLOAT PRESSURE: %.2f mbar\r\n", x, y);
     send_host_message(buf);
 }

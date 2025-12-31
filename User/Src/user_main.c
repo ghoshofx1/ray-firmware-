@@ -14,7 +14,7 @@ void user_main(void)
     char buf[75]; 
 
     //LSM_check_status();
-    // LSM_init();
+    LSM_init();
     // HAL_Delay(1000);
     // LSM_accel_raw_t accel;
     // LSM_gyro_raw_t gyro;
@@ -23,6 +23,7 @@ void user_main(void)
     // MS5_prom_t prom;
     // MS5_raw_values_t values;
     MS5_compensated_values_t comp_values;
+    IMU_phys_t imu_data;
 
     
     while (1)
@@ -39,16 +40,11 @@ void user_main(void)
         // LSM_convert(&accel, &gyro, &imu_data);  
 
 
-        // MS5_read_PROM(&prom);
-        // sprintf(buf, "C1: %u C2: %u C3: %u C4: %u C5: %u C6: %u\r\n", prom.C1, prom.C2, prom.C3, prom.C4, prom.C5, prom.C6);
-        // send_host_message(buf);
-
-        // MS5_read_raw_values(&values);
-        // sprintf(buf, "Raw Pressure: %ld Raw Temperature: %ld\r\n", values.raw_pressure, values.raw_temperature);
-        // send_host_message(buf);
        
         MS5_read_compensated_values(&comp_values);
-        // sprintf(buf, "Pressure: %.2f mbar Temperature: %.2f C\r\n", comp_values.pressure, comp_values.temperature);
+        LSM_get_phys(&imu_data);
+
+        // sprintf(buf, "Pressure: %ld mbar, Temperature: %ld C\r\n", comp_values.pressure, comp_values.temperature);
         // send_host_message(buf);
 
         HAL_Delay(1000);
