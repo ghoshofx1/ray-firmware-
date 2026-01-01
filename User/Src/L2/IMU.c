@@ -37,7 +37,6 @@ typedef struct {
     int16_t z;
 } LSM_gyro_raw_t;
 
-
 /* Static helper functions */
 
 static float accel_mps2(int16_t raw) {
@@ -51,7 +50,6 @@ static float gyro_dps(int16_t raw) {
 static float gyro_rads(int16_t raw) {
     return gyro_dps(raw) * 3.14159265 / 180.0;
 }
-
 
 void LSM_check_status(void)
 {
@@ -121,9 +119,9 @@ static void LSM_convert(const LSM_accel_raw_t *accel_raw, const LSM_gyro_raw_t *
     phys->ay = accel_mps2(accel_raw->y);
     phys->az = accel_mps2(accel_raw->z);
 
-    phys->gx = gyro_rads(gyro_raw->x);
-    phys->gy = gyro_rads(gyro_raw->y);
-    phys->gz = gyro_rads(gyro_raw->z);
+    phys->gx = gyro_dps(gyro_raw->x);
+    phys->gy = gyro_dps(gyro_raw->y);
+    phys->gz = gyro_dps(gyro_raw->z);
 }
 
 void LSM_get_phys(IMU_phys_t *phys)
