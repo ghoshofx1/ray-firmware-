@@ -71,11 +71,10 @@ void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(GPIOB, MS5_CS_Pin|ICM_CS_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPS_CS_GPIO_Port, GPS_CS_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(GPIOD, GPS_CS_Pin|GPS_RST_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOD, GPS_RST_Pin|E22_RST_Pin|E22_DIO1_Pin|E22_TXEN_Pin
-                          |E22_RXEN_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOD, E22_RST_Pin|E22_DIO1_Pin|E22_TXEN_Pin|E22_RXEN_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOE, LED_G_EN_Pin|LED_R_EN_Pin, GPIO_PIN_RESET);
