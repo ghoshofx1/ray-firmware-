@@ -64,6 +64,9 @@ void user_main(void)
         theta_m = -atan2(imu_data.ax/9.81, imu_data.az/9.81)/2/3.14159265*360;
         phi_m = atan2(imu_data.ay/9.81, imu_data.az/9.81)/2/3.14159265*360;
 
+
+
+
         // Apply a simple low-pass filter
         theta_f = 0.9*theta_f + 0.1*theta_m;
         phi_f = 0.9*phi_f + 0.1*phi_m;
@@ -83,8 +86,8 @@ void user_main(void)
 
 
         // Complementary filter to combine accelerometer and gyroscope
-        sys_theta = 0.9 * (sys_theta + imu_data.gy * dt) + 0.1 * theta_f;
-        sys_phi = 0.9 * (sys_phi + imu_data.gx * dt) + 0.1 * phi_f;
+        sys_theta = 0.95 * (sys_theta + imu_data.gy * dt) + 0.05 * theta_m;
+        sys_phi = 0.95 * (sys_phi + imu_data.gx * dt) + 0.05 * phi_m;
 
         
 
