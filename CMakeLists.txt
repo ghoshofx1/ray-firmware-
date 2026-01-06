@@ -50,6 +50,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     User/Src/L1/USART_driver.c
     User/Src/L2/IMU.c
     User/Src/L2/Barometer.c
+    User/Src/L2/GPS.c
 )
 
 # Add include paths
