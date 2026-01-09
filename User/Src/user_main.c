@@ -34,19 +34,11 @@ void user_main(void)
     while (1)
     {   
 
-        if (GPS_pop(&recent))
-        {
-            sprintf(buf, "GPS Fix: Lat: ");
-            send_host_message(buf);
-            float_to_str(recent.lat_e7 / 1e7);
-            sprintf(buf, " Lon: ");
-            send_host_message(buf);
-            float_to_str(recent.lon_e7 / 1e7);
-            sprintf(buf, " Speed (cm/s): %d\r\n", recent.speed_cms);    
-            send_host_message(buf);
-        }
+
+        GPS_pop(&recent);
     
-    HAL_Delay(1000);
+    
+    HAL_Delay(5000);
     //print_GPS();
     //HAL_Delay(1000);
     }

@@ -3,8 +3,11 @@
 #include "USART_driver.h"
 #include <stdint.h>
 #include <string.h>
+#include <stdio.h>
 
 #define GPS_BUFFER_MAX_SIZE 8
+
+static char buf[128];
 
 typedef struct
 {
@@ -19,6 +22,7 @@ static GPS_circular_buffer_t gps_cbuf;
 
 static uint8_t  gps_cbuf_push_isr(const gps_rmc_t *fix)
 {
+    
     uint8_t next = (gps_cbuf.head + 1) % GPS_BUFFER_MAX_SIZE;
 
     if (next == gps_cbuf.tail)
@@ -27,6 +31,11 @@ static uint8_t  gps_cbuf_push_isr(const gps_rmc_t *fix)
     gps_cbuf.buffer[gps_cbuf.head] = *fix;
     gps_cbuf.head = next;
     gps_cbuf.count++;
+
+    sprintf(buf, "Pushed to cbuff! head %d. tail %d. count %d\r\n", gps_cbuf.head, gps_cbuf.tail, gps_cbuf.count);
+    send_host_message(buf);
+    
+    //send_host_message("Just pushed! head %d.\r\n", gps_cbuf.head);
     return 1;
 }
 
@@ -76,5 +85,8 @@ uint8_t GPS_pop(gps_rmc_t *out)
     *out = gps_cbuf.buffer[gps_cbuf.tail];
     gps_cbuf.tail = (gps_cbuf.tail + 1) % GPS_BUFFER_MAX_SIZE;
     gps_cbuf.count--;
+
+    sprintf(buf, "Popped from cbuff! head %d. tail %d. count %d\r\n", gps_cbuf.head, gps_cbuf.tail, gps_cbuf.count);
+    send_host_message(buf);
     return 1;
 }
