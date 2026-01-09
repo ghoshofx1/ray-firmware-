@@ -8,6 +8,7 @@
 #include <stm32h7xx_hal.h>
 #include <math.h>
 #include "usart.h"
+#include <GPS_types.h>
 
 void float_to_str(float x) {
 
@@ -29,8 +30,23 @@ void user_main(void)
     char buf[256];
     //uint8_t i = 0;
     GPS_init();
+    gps_rmc_t recent; 
     while (1)
     {   
+
+        if (GPS_pop(&recent))
+        {
+            sprintf(buf, "GPS Fix: Lat: ");
+            send_host_message(buf);
+            float_to_str(recent.lat_e7 / 1e7);
+            sprintf(buf, " Lon: ");
+            send_host_message(buf);
+            float_to_str(recent.lon_e7 / 1e7);
+            sprintf(buf, " Speed (cm/s): %d\r\n", recent.speed_cms);    
+            send_host_message(buf);
+        }
+    
+    HAL_Delay(1000);
     //print_GPS();
     //HAL_Delay(1000);
     }
