@@ -1,12 +1,12 @@
 #include "L1/USART_driver.h"
+#include "L2/GPS.h"
 #include "usart.h"
 #include <string.h>
 
 /*variable definitions for GPS data reception */
-volatile uint8_t gps_rx_ch = 0;
-volatile char gps_line[GPS_LINE_MAX];
-volatile uint16_t gps_character_count = 0;
-volatile uint8_t gps_line_ready = 0;
+static volatile uint8_t gps_rx_ch = 0;
+static volatile char gps_rx_line[GPS_LINE_MAX];
+static volatile uint16_t gps_character_count = 0;
 
 void send_host_message(const char *message)
 {
@@ -49,33 +49,22 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
         uint8_t ch = gps_rx_ch;
 
         if (ch == '\n') {
-            gps_line[gps_character_count] = '\0';
-            gps_line_ready = 1;
+            gps_rx_line[gps_character_count] = '\0';
+            GPS_push_line((const char*)gps_rx_line, gps_character_count);
             gps_character_count = 0;
+            
             
         }
         else if (gps_character_count < GPS_LINE_MAX - 1)
          {
-            gps_line[gps_character_count] = ch;
+            gps_rx_line[gps_character_count] = ch;
             gps_character_count++;
         }
         else {
             gps_character_count = 0;
         }
-
+        
         // Re-arm interrupt
         GPS_arm_receive_interrupt();
     }
 }
-
-// void print_GPS(void)
-// {
-//     if (gps_line_ready)
-//     {   
-//         gps_line_ready = 0;
-//         send_host_message(gps_line);
-//         send_host_message("\r\n");
-        
-//     }
-// }
-
