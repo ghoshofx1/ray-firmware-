@@ -9,11 +9,6 @@
 #define LSM_CS_LOW() HAL_GPIO_WritePin(LSM_CS_GPIO_Port, LSM_CS_Pin, GPIO_PIN_RESET)
 #define LSM_CS_HIGH() HAL_GPIO_WritePin(LSM_CS_GPIO_Port, LSM_CS_Pin, GPIO_PIN_SET)
 
-/*SPI drivers for MS5 Barometer*/
-
-#define MS5_CS_LOW() HAL_GPIO_WritePin(MS5_CS_GPIO_Port, MS5_CS_Pin, GPIO_PIN_RESET)
-#define MS5_CS_HIGH() HAL_GPIO_WritePin(MS5_CS_GPIO_Port, MS5_CS_Pin, GPIO_PIN_SET)
-
 void LSM_write(uint8_t reg, uint8_t data)
 {
     uint8_t tx[2];
@@ -36,6 +31,12 @@ void LSM_read(uint8_t start_reg, uint8_t len, uint8_t *rx_buffer)
     HAL_SPI_TransmitReceive(&hspi2, tx, rx_buffer, len + 1, HAL_MAX_DELAY);
     LSM_CS_HIGH();
 }
+
+
+/*SPI drivers for MS5 Barometer*/
+
+#define MS5_CS_LOW() HAL_GPIO_WritePin(MS5_CS_GPIO_Port, MS5_CS_Pin, GPIO_PIN_RESET)
+#define MS5_CS_HIGH() HAL_GPIO_WritePin(MS5_CS_GPIO_Port, MS5_CS_Pin, GPIO_PIN_SET)
 
 void MS5_write(uint8_t data)
 {

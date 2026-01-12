@@ -11,7 +11,7 @@ static char buf[128];
 
 typedef struct
 {
-    gps_rmc_t buffer[GPS_CB_SIZE];
+    GPS_RMC_t buffer[GPS_CB_SIZE];
     volatile uint8_t head;
     volatile uint8_t tail;
     volatile uint8_t count;
@@ -20,7 +20,7 @@ typedef struct
 /*Main circular buffer for GPS messages*/
 static GPS_circular_buffer_t gps_cbuf;
 
-static uint8_t  gps_cbuf_push_isr(const gps_rmc_t *fix)
+static uint8_t  gps_cbuf_push_isr(const GPS_RMC_t *fix)
 {
     
     uint8_t next = (gps_cbuf.head + 1) % GPS_BUFFER_MAX_SIZE;
@@ -39,7 +39,7 @@ static uint8_t  gps_cbuf_push_isr(const gps_rmc_t *fix)
     return 1;
 }
 
-static uint8_t parse_rmc_fast(const char *line, gps_rmc_t *fix)
+static uint8_t parse_rmc_fast(const char *line, GPS_RMC_t *fix)
 {
 
     fix->valid = 1;          // Assume valid for this stub
@@ -63,7 +63,7 @@ void GPS_push_line(const char *line, int length)
         if (memcmp(line, "$GNRMC", 6) != 0)
             return;
 
-        gps_rmc_t fix;
+        GPS_RMC_t fix;
 
         if (!parse_rmc_fast(line, &fix))
             return;
@@ -77,7 +77,7 @@ void GPS_init(void)
     GPS_arm_receive_interrupt();
 }
 
-uint8_t GPS_pop(gps_rmc_t *out)
+uint8_t GPS_pop(GPS_RMC_t *out)
 {
     if (gps_cbuf.head == gps_cbuf.tail)
         return 0; // empty

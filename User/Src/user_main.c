@@ -27,20 +27,12 @@ send_host_message(str);
 void user_main(void)
 {
 
-    char buf[256];
-    //uint8_t i = 0;
-    GPS_init();
-    gps_rmc_t recent; 
+
     while (1)
     {   
 
-
-        GPS_pop(&recent);
-    
-    
-    HAL_Delay(5000);
-    //print_GPS();
-    //HAL_Delay(1000);
+   
+    HAL_Delay(1000);
     }
 
 }

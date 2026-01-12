@@ -11,7 +11,7 @@ typedef struct {
     uint32_t utc_date;
     uint16_t speed_cms;
     uint16_t course_cd;
-} gps_rmc_t;
+} GPS_RMC_t;
 
 
 #endif /* GPS_TYPES_H */
