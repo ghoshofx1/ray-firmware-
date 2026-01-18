@@ -71,10 +71,10 @@ void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(GPIOB, MS5_CS_Pin|ICM_CS_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOD, GPS_CS_Pin|GPS_RST_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(GPIOD, GPS_CS_Pin|GPS_RST_Pin|E22_RST_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOD, E22_RST_Pin|E22_DIO1_Pin|E22_TXEN_Pin|E22_RXEN_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOD, E22_TXEN_Pin|E22_RXEN_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOE, LED_G_EN_Pin|LED_R_EN_Pin, GPIO_PIN_RESET);
@@ -131,24 +131,22 @@ void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : GPS_CS_Pin */
-  GPIO_InitStruct.Pin = GPS_CS_Pin;
+  /*Configure GPIO pins : GPS_CS_Pin E22_RST_Pin E22_TXEN_Pin E22_RXEN_Pin */
+  GPIO_InitStruct.Pin = GPS_CS_Pin|E22_RST_Pin|E22_TXEN_Pin|E22_RXEN_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
-  HAL_GPIO_Init(GPS_CS_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : GPS_RST_Pin E22_RST_Pin E22_DIO1_Pin E22_TXEN_Pin
-                           E22_RXEN_Pin */
-  GPIO_InitStruct.Pin = GPS_RST_Pin|E22_RST_Pin|E22_DIO1_Pin|E22_TXEN_Pin
-                          |E22_RXEN_Pin;
+  /*Configure GPIO pin : GPS_RST_Pin */
+  GPIO_InitStruct.Pin = GPS_RST_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPS_RST_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : GPS_PPS_Pin E22_BUSY_Pin */
-  GPIO_InitStruct.Pin = GPS_PPS_Pin|E22_BUSY_Pin;
+  /*Configure GPIO pins : GPS_PPS_Pin E22_DIO1_Pin E22_BUSY_Pin */
+  GPIO_InitStruct.Pin = GPS_PPS_Pin|E22_DIO1_Pin|E22_BUSY_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);

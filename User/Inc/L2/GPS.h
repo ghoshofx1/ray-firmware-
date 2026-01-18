@@ -10,12 +10,9 @@
 2. Implement application-facing parsing functions for NMEA sentences - most important are GGA, GLL, GSA, GSV, RMC
 3. Refactor code such for cleaner API via GPS header */
 
-
 uint8_t GPS_pop(GPS_RMC_t *out);
 void GPS_init(void);
 
 void GPS_push_line(const char* line, int length);
-
-
 
 #endif 
