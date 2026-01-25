@@ -51,7 +51,9 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     User/Src/L2/IMU.c
     User/Src/L2/Barometer.c
     User/Src/L2/GPS.c
+    User/Src/L2/Radio.c
     User/Src/L3/IMU_filtering.c
+       
 )
 
 # Add include paths

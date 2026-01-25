@@ -18,20 +18,21 @@
 #define CTRL10 (uint8_t)0x19
 // #include <stdint.h>
 
-
 #define G 9.80665
-#define ACC_SENSITIVITY_2G 0.061   // mg/LSB
+#define ACC_SENSITIVITY_2G 0.061      // mg/LSB
 #define GYRO_SENSITIVITY_125DPS 4.375 // mdps/LSB
 
 /* Accelerometer raw data */
-typedef struct {
+typedef struct
+{
     int16_t x;
     int16_t y;
     int16_t z;
 } LSM_accel_raw_t;
 
 /* Gyroscope raw data */
-typedef struct {
+typedef struct
+{
     int16_t x;
     int16_t y;
     int16_t z;
@@ -39,20 +40,24 @@ typedef struct {
 
 /* Static helper functions */
 
-static float accel_mps2(int16_t raw) {
+static float accel_mps2(int16_t raw)
+{
     return raw * ACC_SENSITIVITY_2G * G / 1000.0;
 }
 
-static float gyro_dps(int16_t raw) {
+static float gyro_dps(int16_t raw)
+{
     return raw * GYRO_SENSITIVITY_125DPS / 1000.0;
 }
 
-static float gyro_rads(int16_t raw) {
+static float gyro_rads(int16_t raw)
+{
     return gyro_dps(raw) * 3.14159265 / 180.0;
 }
 
 void LSM_check_status(void)
 {
+
     char buf[50];
     uint8_t whoami[2];
     LSM_read(0x0F, 1, whoami);
@@ -95,7 +100,6 @@ static void LSM_accel_raw_read(LSM_accel_raw_t *accel_raw)
     uint8_t rx[7] = {0};
     LSM_read(0x28, 6, rx);
 
-
     // double check this math ... typcasting may throw errors
     accel_raw->x = (int16_t)(rx[1] | (rx[2] << 8));
     accel_raw->y = (int16_t)(rx[3] | (rx[4] << 8));
@@ -110,7 +114,6 @@ static void LSM_gyro_raw_read(LSM_gyro_raw_t *gyro_raw)
     gyro_raw->x = (int16_t)(rx[1] | (rx[2] << 8));
     gyro_raw->y = (int16_t)(rx[3] | (rx[4] << 8));
     gyro_raw->z = (int16_t)(rx[5] | (rx[6] << 8));
-
 }
 
 static void LSM_convert(const LSM_accel_raw_t *accel_raw, const LSM_gyro_raw_t *gyro_raw, IMU_phys_t *phys)
@@ -134,5 +137,3 @@ void LSM_get_phys(IMU_phys_t *phys)
 
     LSM_convert(&accel_raw, &gyro_raw, phys);
 }
-
-

@@ -31,7 +31,6 @@ void user_main(void)
     while (1)
     {   
 
-   
     HAL_Delay(1000);
     }
 

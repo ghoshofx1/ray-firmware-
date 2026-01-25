@@ -32,7 +32,6 @@ void complementary_filter_update(float* roll, float* pitch) {
     // Roll is rotation about X axis
     phi_gyro = phi_gyro + IMU_raw.gx * dt;
 
-
     sys_theta = 0.95 * (sys_theta + IMU_raw.gy * dt) + 0.05 * theta_measured;
     sys_phi = 0.95 * (sys_phi + IMU_raw.gx * dt) + 0.05 * phi_measured;
 
