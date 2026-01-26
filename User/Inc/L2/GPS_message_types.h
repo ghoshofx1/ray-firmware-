@@ -1,5 +1,5 @@
-#ifndef GPS_TYPES_H
-#define GPS_TYPES_H
+#ifndef GPS_MESSAGE_TYPES_H
+#define GPS_MESSAGE_TYPES_H
 
 #include <stdint.h>
 
@@ -14,4 +14,4 @@ typedef struct {
 } GPS_RMC_t;
 
 
-#endif /* GPS_TYPES_H */
+#endif /* GPS_MESSAGE_TYPES_H */

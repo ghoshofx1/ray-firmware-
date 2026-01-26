@@ -1,5 +1,5 @@
 #include "GPS.h"
-#include "GPS_types.h"
+#include "GPS_message_types.h"
 #include "USART_driver.h"
 #include <stdint.h>
 #include <string.h>

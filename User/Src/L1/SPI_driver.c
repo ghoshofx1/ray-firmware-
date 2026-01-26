@@ -7,6 +7,7 @@
 /* Note which peripherals are on which SPI buses
 SPI2 - seen as "SPI" in schematic - has LSM6DSV, ADXL375, LIS2MD
 Note that for SPI2 is currently in MODE 3 (CPOL=1, CPHA=1) --> change later
+
 SPI6 - seen as "SPI2" in schematic - has E22900MM22S, ICM40609, CAM-M8Q-0
 Note that SPI6 is currently in MODE 0 (CPOL=0, CPHA=0) */
 
@@ -51,10 +52,63 @@ void MS5_write(uint8_t data)
 }
 
 void MS5_read(uint8_t start_reg, uint8_t len, uint8_t *rx_buffer)
+{
+}
 
 /* SPI driver for SX1262 Lora radio*/
 #define E22_CS_LOW() HAL_GPIO_WritePin(E22_CS_GPIO_Port, E22_CS_Pin, GPIO_PIN_RESET)
 #define E22_CS_HIGH() HAL_GPIO_WritePin(E22_CS_GPIO_Port, E22_CS_Pin, GPIO_PIN_SET)
 
+static void E22_wait_while_busy(void)
+{
+    while (HAL_GPIO_ReadPin(E22_BUSY_GPIO_Port, E22_BUSY_Pin) == GPIO_PIN_SET)
+    {
+        ; // spin (add timeout later if you want)
+    }
+}
+
+sx126x_hal_status_t sx126x_hal_write(const uint8_t *command, const uint16_t command_length,
+                                     const uint8_t *data, const uint16_t data_length)
+{
+
+    E22_wait_while_busy();
+
+    E22_CS_LOW();
+
+    if (HAL_SPI_Transmit(&hspi6, (uint8_t *)command, command_length, HAL_MAX_DELAY) != HAL_OK)
+    {
+        E22_CS_HIGH();
+        return SX126X_HAL_STATUS_ERROR;
+    }
+
+    // 4. Send data bytes (if any)
+    if (data_length > 0)
+    {
+        if (HAL_SPI_Transmit(&hspi6, (uint8_t *)data, data_length, HAL_MAX_DELAY) != HAL_OK)
+        {
+            E22_CS_HIGH();
+            return SX126X_HAL_STATUS_ERROR;
+        }
+    }
+
+    // 5. End SPI transaction
+    E22_CS_HIGH();
+
+    return SX126X_HAL_STATUS_OK;
+}
+
+sx126x_hal_status_t sx126x_hal_read(const uint8_t *command, const uint16_t command_length,
+                                    uint8_t *data, const uint16_t data_length)
+{
+    E22_CS_LOW();
+
+    E22_CS_HIGH();
+}
+
+sx126x_hal_status_t sx126x_hal_reset()
+{
+}
+
+sx126x_hal_status_t sx126x_hal_wakeup()
 {
 }

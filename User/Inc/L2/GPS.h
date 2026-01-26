@@ -1,6 +1,6 @@
 #ifndef GPS_H
 #define GPS_H
-#include "GPS_types.h"
+#include "GPS_message_types.h"
 #include <stdint.h>
 
 #define GPS_CB_SIZE 8

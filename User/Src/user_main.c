@@ -8,7 +8,7 @@
 #include <stm32h7xx_hal.h>
 #include <math.h>
 #include "usart.h"
-#include <GPS_types.h>
+#include <GPS_message_types.h>
 
 void float_to_str(float x) {
 
